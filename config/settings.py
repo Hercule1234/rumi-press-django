@@ -134,3 +134,37 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Railway detection
+if 'RAILWAY_STATIC_URL' in os.environ:
+    DEBUG = False
+    
+    # Hosts autorisés
+    ALLOWED_HOSTS = ['.railway.app', '127.0.0.1']
+    
+    # Database Railway
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True
+        )
+    }
+    
+    # Static files (WhiteNoise)
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # Middleware pour WhiteNoise (ajoutez en premier)
+    MIDDLEWARE = [
+        'whitenoise.middleware.WhiteNoiseMiddleware',
+        # ... vos autres middlewares
+    ]
+
+# Configuration pour SECRET_KEY de production
+try:
+    SECRET_KEY = config('SECRET_KEY')
+except:
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'votre-secret-key-de-secours')
