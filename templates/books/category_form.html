@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} une Catégorie - Rumi Press{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- En-tête de page -->
+    <div class="mb-8">
+        <div class="flex items-center space-x-3 mb-4">
+            <a href="{% url 'category_list' %}" class="text-indigo-600 hover:text-indigo-800 transition duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900">
+                {% if form.instance.pk %}
+                    ✏️ Modifier la Catégorie
+                {% else %}
+                    📂 Ajouter une Catégorie
+                {% endif %}
+            </h1>
+        </div>
+        <p class="text-gray-600 ml-9">
+            {% if form.instance.pk %}
+                Modifiez les informations de la catégorie "{{ form.instance.name }}"
+            {% else %}
+                Créez une nouvelle catégorie pour organiser vos livres
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Carte du formulaire -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <!-- En-tête de la carte -->
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">
+                {% if form.instance.pk %}
+                    Informations de la catégorie
+                {% else %}
+                    Nouvelle catégorie
+                {% endif %}
+            </h2>
+        </div>
+
+        <!-- Formulaire -->
+        <form method="post" class="p-6">
+            {% csrf_token %}
+            
+            <!-- Gestion des erreurs globales -->
+            {% if form.non_field_errors %}
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-red-700 text-sm">{{ form.non_field_errors }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Champ Nom -->
+            <div class="mb-6">
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Nom de la catégorie *
+                </label>
+                <div class="relative">
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if form.name.help_text %}
+                <p class="mt-1 text-sm text-gray-500">{{ form.name.help_text }}</p>
+                {% endif %}
+                {% if form.name.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.name.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Informations contextuelles -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex">
+                    <svg class="w-5 h-5 text-blue-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-sm text-blue-700">
+                        <p class="font-medium">Conseil :</p>
+                        <p>Choisissez un nom clair et descriptif pour votre catégorie (ex: "Data Science", "Python", "Business Analytics").</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions du formulaire -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-gray-200">
+                <a href="{% url 'category_list' %}" 
+                   class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <div class="flex space-x-3 w-full sm:w-auto">
+                    {% if form.instance.pk %}
+                    <a href="{% url 'category_delete' form.instance.pk %}" 
+                       class="w-1/2 sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Supprimer
+                    </a>
+                    {% endif %}
+                    <button type="submit" 
+                            class="w-1/2 sm:w-auto inline-flex items-center justify-center px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {% if form.instance.pk %}
+                            Mettre à jour
+                        {% else %}
+                            Créer la catégorie
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Informations supplémentaires -->
+    <div class="mt-6 bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">💡 Bonnes pratiques</h3>
+        <ul class="text-sm text-gray-600 space-y-2">
+            <li class="flex items-start">
+                <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Utilisez des noms courts et descriptifs</span>
+            </li>
+            <li class="flex items-start">
+                <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Évitez les doublons pour une meilleure organisation</span>
+            </li>
+            <li class="flex items-start">
+                <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Pensez aux domaines de spécialité de votre catalogue</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<style>
+/* Style personnalisé pour le champ de formulaire */
+#{{ form.name.id_for_label }} {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200;
+}
+
+#{{ form.name.id_for_label }}:focus {
+    @apply outline-none ring-2 ring-indigo-500 border-indigo-500;
+}
+</style>
+{% endblock %}

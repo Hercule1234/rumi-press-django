@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un Livre - Rumi Press{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- En-tête de page -->
+    <div class="mb-8">
+        <div class="flex items-center space-x-3 mb-4">
+            <a href="{% url 'book_list' %}" class="text-indigo-600 hover:text-indigo-800 transition duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900">
+                {% if form.instance.pk %}
+                    ✏️ Modifier le Livre
+                {% else %}
+                    📚 Ajouter un Livre
+                {% endif %}
+            </h1>
+        </div>
+        <p class="text-gray-600 ml-9">
+            {% if form.instance.pk %}
+                Modifiez les informations du livre "{{ form.instance.title }}"
+            {% else %}
+                Ajoutez un nouveau livre à votre catalogue de distribution
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Carte du formulaire -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <!-- En-tête de la carte -->
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">
+                {% if form.instance.pk %}
+                    Informations du livre
+                {% else %}
+                    Nouveau livre
+                {% endif %}
+            </h2>
+        </div>
+
+        <!-- Formulaire -->
+        <form method="post" class="p-6">
+            {% csrf_token %}
+            
+            <!-- Gestion des erreurs globales -->
+            {% if form.non_field_errors %}
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-red-700 text-sm">{{ form.non_field_errors }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Grille de champs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Colonne 1 -->
+                <div class="space-y-6">
+                    <!-- Titre -->
+                    <div>
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Titre du livre *
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.title.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sous-titre -->
+                    <div>
+                        <label for="{{ form.subtitle.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Sous-titre
+                        </label>
+                        {{ form.subtitle }}
+                        {% if form.subtitle.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.subtitle.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Auteurs -->
+                    <div>
+                        <label for="{{ form.authors.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Auteur(s) *
+                        </label>
+                        {{ form.authors }}
+                        {% if form.authors.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.authors.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Éditeur -->
+                    <div>
+                        <label for="{{ form.publisher.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Éditeur
+                        </label>
+                        {{ form.publisher }}
+                        {% if form.publisher.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.publisher.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Colonne 2 -->
+                <div class="space-y-6">
+                    <!-- Date de publication -->
+                    <div>
+                        <label for="{{ form.published_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Date de publication *
+                        </label>
+                        {{ form.published_date }}
+                        {% if form.published_date.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.published_date.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Catégorie -->
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Catégorie *
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.category.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Dépenses de distribution -->
+                    <div>
+                        <label for="{{ form.distribution_expense.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Dépenses de distribution (€) *
+                        </label>
+                        <div class="relative">
+                            {{ form.distribution_expense }}
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">€</span>
+                            </div>
+                        </div>
+                        {% if form.distribution_expense.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.distribution_expense.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations contextuelles -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex">
+                    <svg class="w-5 h-5 text-blue-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-sm text-blue-700">
+                        <p class="font-medium">Informations importantes :</p>
+                        <p>Les champs marqués d'un * sont obligatoires. Les dépenses de distribution représentent le coût total de distribution du livre.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions du formulaire -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 mt-8 border-t border-gray-200">
+                <a href="{% url 'book_list' %}" 
+                   class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <div class="flex space-x-3 w-full sm:w-auto">
+                    {% if form.instance.pk %}
+                    <a href="{% url 'book_delete' form.instance.pk %}" 
+                       class="w-1/2 sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Supprimer
+                    </a>
+                    {% endif %}
+                    <button type="submit" 
+                            class="w-1/2 sm:w-auto inline-flex items-center justify-center px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {% if form.instance.pk %}
+                            Mettre à jour
+                        {% else %}
+                            Ajouter le livre
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lien vers l'import en masse -->
+    <div class="mt-6 text-center">
+        <p class="text-gray-600 text-sm">
+            Vous avez plusieurs livres à ajouter ? 
+            <a href="{% url 'book_import' %}" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                Utilisez l'importation Excel
+            </a>
+        </p>
+    </div>
+</div>
+
+<style>
+/* Styles communs pour tous les champs */
+#{{ form.title.id_for_label }},
+#{{ form.subtitle.id_for_label }},
+#{{ form.authors.id_for_label }},
+#{{ form.publisher.id_for_label }},
+#{{ form.published_date.id_for_label }},
+#{{ form.distribution_expense.id_for_label }} {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200;
+}
+
+#{{ form.category.id_for_label }} {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 bg-white;
+}
+
+/* Style spécifique pour le champ date */
+#{{ form.published_date.id_for_label }} {
+    @apply pr-10;
+}
+
+/* États focus */
+#{{ form.title.id_for_label }}:focus,
+#{{ form.subtitle.id_for_label }}:focus,
+#{{ form.authors.id_for_label }}:focus,
+#{{ form.publisher.id_for_label }}:focus,
+#{{ form.published_date.id_for_label }}:focus,
+#{{ form.category.id_for_label }}:focus,
+#{{ form.distribution_expense.id_for_label }}:focus {
+    @apply outline-none ring-2 ring-indigo-500 border-indigo-500;
+}
+</style>
+{% endblock %}
